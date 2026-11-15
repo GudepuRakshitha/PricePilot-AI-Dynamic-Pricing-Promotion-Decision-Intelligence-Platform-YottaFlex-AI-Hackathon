@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import About from "./pages/About";
 import Analytics from "./pages/Analytics";
+import DeveloperProfile from "./pages/DeveloperProfile";
 import Audit from "./pages/Audit";
 import Competitors from "./pages/Competitors";
 import Costs from "./pages/Costs";
@@ -38,9 +38,9 @@ export default function App() {
         <Route path="decisions" element={<Decisions />} />
         <Route path="exceptions" element={<Exceptions />} />
         <Route path="analytics" element={<Analytics />} />
+        <Route path="developer-profile" element={<DeveloperProfile />} />
         <Route path="audit" element={<Audit />} />
         <Route path="settings" element={<Settings />} />
-      <Route path="about" element={<About />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
