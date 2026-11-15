@@ -167,6 +167,3 @@ npm run test  # Vitest + React Testing Library
 13. **Settings** (`/settings`) - Platform configuration (admin only)
 ```
 
-## Version
-
-`PricePilot AI v1.0.0` - Deterministic pricing platform with full explainability.
