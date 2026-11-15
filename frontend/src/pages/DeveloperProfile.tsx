@@ -1,109 +1,390 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useToast } from "../context/ToastContext";
 import { PageHeader, Badge } from "../components/ui";
-import { GraduationCap } from "lucide-react";
+import {
+  GraduationCap,
+  Users,
+  Library,
+  Shield,
+  Briefcase,
+  BookOpen,
+  Folder,
+  Github,
+  Linkedin,
+  Globe,
+  ExternalLink,
+  Headphones,
+} from "lucide-react";
 
 const DeveloperProfile: React.FC = () => {
   const { user } = useAuth();
-  const toast = useToast();
 
   if (!user) {
     return null;
   }
 
+  const professionalLinks = [
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/gudepu-rakshitha-reddy-516aa72a9/", icon: Linkedin },
+    { name: "GitHub", url: "https://github.com/GudepuRakshitha", icon: Github },
+    { name: "ResearchGate", url: "https://www.researchgate.net/profile/Rakshitha-Reddy-Gudepu", icon: Globe },
+    { name: "Blogger", url: "https://www.blogger.com/profile/08555579845123121571", icon: BookOpen },
+    { name: "Hugging Face", url: "https://huggingface.co/GudepuRakshithaReddy", icon: Globe },
+    { name: "LeetCode", url: "https://leetcode.com/u/RakshithaReddy03/", icon: Folder },
+    { name: "HackerRank", url: "https://www.hackerrank.com/profile/rakshithareddy15", icon: Headphones },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="bg-white">
       <PageHeader
         icon={GraduationCap}
         title="Developer Profile"
         subtitle="GudePU Rakshitha Reddy"
-      />
+      >
+      </PageHeader>
 
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="prose max-w-none space-y-8">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-6">
-            About Me
-          </h2>
-          <p className="text-slate-600 mb-6">
-            Computer Science Engineer | AI/ML Enthusiast | Associate AI Forward Deployed Engineer
-          </p>
+      <div className="max-w-7xl mx-auto p-6 min-h-screen">
+        <div className="grid md:grid-cols-12 gap-8">
 
-          <dl className="grid md:grid-cols-2 gap-6">
-            <div>
-              <dt className="font-medium text-slate-600">Education</dt>
-              <dd className="text-slate-600 line-clamp-3">
-                B.Tech – Computer Science and Engineering (AI/ML), Alliance University, Bengaluru | CGPA: 8.9/10
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-slate-600">Professional Experience</dt>
-              <dd className="text-slate-600 line-clamp-3">
-                • Java Backend Developer Intern at Anugraha (2023)
-                • AI/ML Software Development Intern at VETO Studios (2024)
-                • Project Intern at IIT Kharagpur (2023)
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-slate-600">Technical Skills</dt>
-              <dd className="text-slate-600 line-clamp-3">
-                Languages: Java, Python, SQL, TypeScript, C++ | Frameworks: Spring Boot, FastAPI, Node.js, React | Databases: PostgreSQL, MySQL, MongoDB, Redis | Tools: Docker, Git, AWS
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-slate-600">Key Projects</dt>
-              <dd className="text-slate-600 line-clamp-3">
-                • PricePilot AI – Dynamic Pricing & Promotion Decision Intelligence Platform (full-stack pricing platform with React, FastAPI, PostgreSQL 18, deterministic synthetic data generation with seed 20261022)
-              </dd>
-            </div>
-          </dl>
+          <div className="md:col-span-8 space-y-6">
 
-          <div className="space-y-4">
-            <h3 className="text-base font-medium text-slate-600 mb-3">Professional Profiles</h3>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="https://www.linkedin.com/in/gudepu-rakshitha-reddy-516aa72a9/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1 rounded border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-600 transition"
-              >
-                <span className="text-xs font-medium">LinkedIn</span>
+            {/* Profile Card */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <div className="relative w-24 h-24 shrink-0">
+                  <div className="absolute -inset-1 rounded-full bg-slate-100"></div>
+                  <img
+                    src="/placeholder-profile.svg"
+                    alt="Profile"
+                    className="rounded-full w-full h-full object-cover"
+                  />
+                  <div className="absolute -bottom-1 -right-1 rounded-full bg-green-500 w-6 h-6 border-2 white"></div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-2xl md:text-3xl font-bold text-navy-900">
+                    Gudepu Rakshitha Reddy
+                  </h1>
+                  <p className="text-sm text-green-600 font-medium">
+                    AI/ML Engineer | Java Backend Developer
+                  </p>
+                  <p className="text-sm text-slate-500">
+                    Bengaluru, Karnataka
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Professional Links */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h2 className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-4">
+                Professional Links
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {professionalLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 rounded-full border border-green-400/40 bg-green-50/30 px-3 py-1.5 hover:bg-green-100 hover:text-green-800 transition-colors cursor-pointer"
+                    >
+                      <Icon className="h-4 w-4 text-green-600" />
+                      <span className="text-sm font-medium text-slate-700">{link.name}</span>
+                      <ExternalLink className="h-3 w-3 text-green-400" />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* About Me */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h2 className="text-blue-600 font-medium mb-4 flex items-center gap-2">
+                <Badge className="text-xs font-medium bg-blue-500 text-white px-2 py-0.5 rounded">
+                  About Me
+                </Badge>
+              </h2>
+              <p className="text-slate-600 leading-relaxed">
+                Passionate AI/ML Engineer and Java Backend Developer with hands-on
+                experience in backend development, machine learning, deep learning,
+                enterprise software development, and research publications. Strong
+                interest in Generative AI, scalable backend systems, and intelligent
+                decision-support platforms.
+              </p>
+            </div>
+
+            {/* Education */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h2 className="text-blue-600 font-medium mb-4 flex items-center gap-2">
+                <Badge className="text-xs font-medium bg-blue-500 text-white px-2 py-0.5 rounded">
+                  Education
+                </Badge>
+              </h2>
+              <div className="space-y-4 pl-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="h-4 w-4 text-navy-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      Alliance University
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Bachelor of Technology — Computer Science &amp; Engineering (AI &amp; ML)
+                    </p>
+                  </div>
+                  <span className="text-xs text-navy-400">
+                    Sep 2022 – May 2026
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                    <Users className="h-4 w-4 text-navy-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      Alphores Junior College
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Intermediate (MPC)
+                    </p>
+                  </div>
+                  <span className="text-xs text-navy-400">
+                    2020 – 2022
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                    <Folder className="h-4 w-4 text-navy-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      Siddartha High School
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      SSC
+                    </p>
+                  </div>
+                  <span className="text-xs text-navy-400">
+                    CGPA: 10 / 10
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Internships */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h2 className="text-blue-600 font-medium mb-4 flex items-center gap-2">
+                <Badge className="text-xs font-medium bg-blue-500 text-white px-2 py-0.5 rounded">
+                  Internships
+                </Badge>
+              </h2>
+              <div className="space-y-4 relative">
+                <div className="absolute left-0 top-0 h-full w-1 bg-navy-400"></div>
+                <div className="flex items-start gap-4 pl-4">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      Anugraha Exceed Pvt. Ltd.
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Java Backend Developer Intern
+                    </p>
+                    <p className="text-xs text-navy-400">
+                      Jul 2025 – Oct 2025
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 pl-4">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      VETO Studios Pvt Ltd
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      AI Software Development Intern
+                    </p>
+                    <p className="text-xs text-navy-400">
+                      Mar 2024 – Jun 2024
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 pl-4">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-slate-900">
+                      IIT Kharagpur
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Project Intern
+                    </p>
+                    <p className="text-xs text-navy-400">
+                      Jul 2023 – Nov 2023
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Projects & Publications */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h2 className="text-blue-600 font-medium mb-4 flex items-center gap-2">
+                <Badge className="text-xs font-medium bg-blue-500 text-white px-2 py-0.5 rounded">
+                  Projects &amp; Research Publications
+                </Badge>
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    SpeechComp-FSQ
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    Book Chapter
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Transformer-based speech compression.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Transformers</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Speech AI</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Deep Learning</span>
+                  </div>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Unified Multimodal AI Engine
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    IEEE Conference
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Summarization using Gemini.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Gemini</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">NLP</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Vision</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">LLM</span>
+                  </div>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Smart Food Inventory
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    IEEE Accepted
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    RFID-based IoT inventory.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">IoT</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">RFID</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">Cloud</span>
+                  </div>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Cauliflower Leaf Detection
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    IEEE Conference
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Hybrid CNN + VAE with Explainable AI.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">CNN</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">GradCAM</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">SHAP</span>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">87% Accuracy</span>
+                  </div>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Bayesian Weather Prediction
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    Conference Paper
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Probabilistic weather forecasting.
+                  </p>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Career Recommendation Framework
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    IEEE Conference
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    ML-powered personalized career guidance.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">95% Accuracy</span>
+                  </div>
+                </div>
+                <div className="group rounded-xl p-4 border border-slate-200 hover:border-navy-300 transition-colors">
+                  <h3 className="font-medium text-slate-900 group-hover:text-navy-600 transition">
+                    Face Recognition Attendance
+                  </h3>
+                  <p className="text-xs text-slate-500 group-hover:text-navy-500 transition mt-1">
+                    IEEE Conference
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Computer Vision attendance automation.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-600">95% Accuracy</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Sidebar */}
+          <div className="md:col-span-4 sticky top-8 md:top-auto space-y-6">
+            <h3 className="font-medium text-slate-600 text-sm mb-3">Quick Navigation</h3>
+            <nav className="space-y-2 text-sm">
+              <a href="#hero" className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 hover:border-navy-300 transition">
+                <Users className="h-4 w-4 transition-colors" /> <span>Hero</span>
               </a>
-              <a
-                href="https://github.com/GudepuRakshitha"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1 rounded border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-600 transition"
-              >
-                <span className="text-xs font-medium">GitHub</span>
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 7.369 6.138 5.701-.535.177-.828.243-1.076.243.19 0 .312.01.418.025 6.424 3.445 9.598 6.538 9.598 6.538 1.76 1.134 1.3 2.43 1.3 2.43s-.483-.695-.84-1.218-1.018-1.08-1.018-1.08H12c-.52 0-1.053.058-1.518.12-2.923.816-3.86 1.947-3.86 3.093 0 1.166.412 1.383.765 1.144 2.222-.256 3.103-.743 3.103-1.018 0-1.018-.01-1.48-.016-4.113-1.008-4.113-4.112 0-4.112-4.008-4.112-4.112-1.82 0-3.506.938-4.114 2.055.6 1.268.6 2.557.6 3.863 0 1.308.327 2.12.7 3.093 1.018.98 1.238 1.1 1.1 2.055 0 3.094-1.016 4.112-4.112 4.112-1.308 0-2.473-.7-3.094-1.778-1.56-.878-1.698-1.898-1.898-3.094 0-1.217.23-2.318.42-3.207 2.368 1.117 2.908 3.09 2.908 5.16 0 2.213-1.177 3.063-2.857 3.063-1.117 0-1.853-.39-2.658-1.09-2.658-1.117 0-1.578-.7-2.513-1.848-2.513-1.848-1.063-1.06-.54-1.69.287-2.252 1.328 1.1 3.153 2.25 3.153 4.832 0 3.428-3.02 3.428-3.428 0-1.062-.01-1.957-.016-2.857-4.112-4.112-4.112-4.112-1.308 0-2.473-.7-3.094-1.778-1.56-1.017-1.505-1.867-2.513-2.513-2.513-1.062 0-1.848.48-2.513 1.848l1.848 1.848c.13.13.16 1.532.13 3.207 0 6.13 4.96 6.13 6.13 0 0-3.136-2.03-6.13-6.13l1.848-1.848c.13-.13.16-1.532.13-3.207 0 0-3.136-2.03-6.13-6.13l-1.848-1.848c-.13-.13-.16-1.532-.13-3.207 0-6.13-4.96-6.13-6.13 0 0 3.136 2.03 6.13 6.13 0 1.848.13 3.207.13 3.207zm12 6.157l-3.18 1.868-1.848-1.848-1.118-2.063-1.848 1.848-3.18-1.868-1.848 1.848-1.118 2.063 1.848 1.848 3.18 1.868 1.848-1.848 1.118 2.063 1.848-1.848 3.18 1.868z" />
-                </svg>
+              <a href="#education" className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 hover:border-navy-300 transition">
+                <GraduationCap className="h-4 w-4 transition-colors" /> <span>Education</span>
               </a>
-              <a
-                href="https://www.researchgate.net/profile/Rakshitha-Reddy-Gudepu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1 rounded border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-600 transition"
-              >
-                ResearchGate
+              <a href="#experience" className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 hover:border-navy-300 transition">
+                <Briefcase className="h-4 w-4 transition-colors" /> <span>Experience</span>
               </a>
-              <a
-                href="https://www.blogger.com/profile/08555579845123121571"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1 rounded border border-slate-200 text-slate-600 hover:border-brand-300 hover:text-brand-600 transition"
-              >
-                Blogger
+              <a href="#publications" className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 hover:border-navy-300 transition">
+                <Library className="h-4 w-4 transition-colors" /> <span>Publications</span>
               </a>
+              <a href="#certifications" className="group flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 hover:border-navy-300 transition">
+                <Shield className="h-4 w-4 transition-colors" /> <span>Certifications</span>
+              </a>
+            </nav>
+            <div>
+              <h3 className="font-medium text-slate-600 text-sm mb-3">Statistics</h3>
+              <div className="grid grid-cols-2 gap-3 text-center">
+                <div><div className="text-2xl font-bold text-navy-900">12+</div><div className="text-slate-500">Research Projects</div></div>
+                <div><div className="text-2xl font-bold text-navy-900">7</div><div className="text-slate-500">Publications</div></div>
+                <div><div className="text-2xl font-bold text-navy-900">100+</div><div className="text-slate-500">Certifications</div></div>
+                <div><div className="text-2xl font-bold text-navy-900">5</div><div className="text-slate-500">Years Experience</div></div>
+              </div>
             </div>
           </div>
+
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-8 text-center text-slate-500 text-sm">
+        <p>
+          Designed &amp; Developed by
+          <span className="font-medium text-navy-800"> Gudepu Rakshitha Reddy</span>
+        </p>
+        <p className="mt-1">PricePilot AI · Dynamic Pricing &amp; Promotion Decision Intelligence Platform</p>
       </div>
     </div>
   );
