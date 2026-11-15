@@ -1,254 +1,184 @@
-# PricePilot AI — Hackathon Demonstration Script
-# 5-7 minute demonstration of the Dynamic Pricing & Promotion Decision Intelligence Platform
+# PricePilot AI – Hackathon Demonstration Script
 
-## Demo Title: "Real-Time Dynamic Pricing Intelligence with Explainable AI"
+## Real-Time Dynamic Pricing and Promotion Intelligence
 
----
+### 1. Introduction
 
-## 1. Problem Statement (1 minute)
+Good morning everyone.
 
-**Business Challenge:**
-- Retailers and e-commerce platforms face constant price pressure from competitors
-- Manual price optimization is time-consuming and inconsistent
-- Promotions need careful stacking to avoid margin erosion
-- Inventory levels need to be balanced with pricing decisions
-- Compliance with margin constraints requires constant monitoring
+Today, I'm presenting **PricePilot AI**, a dynamic pricing and promotion decision intelligence platform developed for the YottaFlex AI Hackathon.
 
-**PricePilot AI Solves:**
-- Automated price optimization with floor/ceiling constraints
-- Promotional eligibility and stacking validation
-- Competitor price intelligence with staleness warnings
-- Inventory-aware pricing decisions
-- Full explainability — every price change is traceable
+The idea behind this project is simple. In retail and e-commerce, prices change constantly. Businesses need to consider competitor prices, product costs, inventory levels, customer demand, and ongoing promotions before deciding what price to offer.
 
----
+Managing all these factors manually can be difficult and time-consuming. A pricing decision that looks profitable initially could also reduce the actual profit margin or violate business rules.
 
-## 2. Solution Overview (1 minute)
+That's the problem PricePilot AI is designed to address.
 
-**Architecture:**
-- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS
-- **Backend**: FastAPI + SQLAlchemy + Pydantic + Alembic + PostgreSQL 18
-- **Data**: Deterministic synthetic data (seed 20261022)
-- **Pricing Engine**: Rule-based with floor, ceiling, margin constraints
-- **RBAC**: Three roles — Analyst, Manager, Admin
+It helps businesses make pricing decisions using real database records, business rules, and explainable recommendations.
 
-**Key Features Demonstrated:**
-1. Login with role-based access
-2. Dashboard KPIs from real database records
-3. Pricing simulation with floor/ceiling validation
-4. Decision center — approve/block pricing decisions
-5. Exception tracking for edge cases
-6. Competitor price monitoring
-7. Promotion management with stacking rules
-8. Analytics and audit logging
+### 2. Technology and Architecture
 
----
+The application follows a three-tier architecture.
 
-## 3. Live Demonstration (3-4 minutes)
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS and Recharts.
+- **Backend:** Python, FastAPI, SQLAlchemy and Pydantic.
+- **Database:** PostgreSQL 18, with Alembic for database migrations.
 
-### Step 1: Login (30 seconds)
+I've also implemented JWT authentication and role-based access for three types of users: Analyst, Manager and Admin.
 
-```
-URL: http://localhost:5173
-Credentials: analyst@pricepilot.ai / Analyst@12345
-```
+The pricing engine is deterministic and rule-based. Rather than presenting recommendations as unexplained AI predictions, it shows the business factors and constraints behind each decision.
 
-*Navigates to dashboard — KPIs load from actual PostgreSQL data*
+### 3. Live Application Demonstration
 
----
+**Step 1 – Login**
 
-### Step 2: Dashboard — KPIs from DB (45 seconds)
+I'll start by logging into the application using the demo Analyst account.
 
-**Key Performance Indicators displayed (all from actual DB records):**
+The application provides different access permissions depending on the user's role.
 
-- **Revenue**: ₹4,559,719.97 — computed from `SELECT SUM(revenue) FROM customer_orders`
-- **Gross Profit**: ₹1,141,887.85 — computed from order profitability
-- **Average Margin**: 25.04% — from approved pricing decisions
-- **Inventory Value**: ₹66,017,814.13 — from inventory snapshots × cost history
-- **Active Promotions**: 14 — from promotions table
-- **Open Exceptions**: 3 — from exceptions table with resolution_status='OPEN'
-- **Competitor Deviations**: 40 — stale observations FLAGGED with warnings
+Once logged in, we are redirected to the dashboard.
 
-*Point out that all metrics are from actual PostgreSQL records, not fabricated*
+**Step 2 – Dashboard**
 
----
+The dashboard gives us an overview of the business.
 
-### Step 3: Products Page — 100 SKU Catalog (45 seconds)
+We can see important metrics such as revenue, gross profit, average margin, inventory value, active promotions and open exceptions.
 
-- Browse product catalog with filtering and search
-- SKUs: SKU-000001 through SKU-000100
-- Categories: Electronics, Home & Kitchen, Fitness, etc.
-- Real product data generated with seed 20261022
-- Demonstrate sort and search functionality
+These metrics are calculated from the PostgreSQL database rather than being displayed as hard-coded values.
 
----
+This gives users a quick understanding of the current business situation.
 
-### Step 4: Cost Management (45 seconds)
+**Step 3 – Product Management**
 
-- View cost history per SKU
-- Cost ID format: `COST-SKU-000001-202601` (YYYYMM format)
-- Demonstrate cost record creation with admin role
-- Show how cost changes propagate to price floor calculations
+Next, let's look at the Products page.
 
----
+Here, we can explore the product catalogue, search for individual SKUs and filter products based on available information.
 
-### Step 5: Pricing Simulator (60 seconds)
+The starter dataset contains 100 products, generated using the fixed seed value `20261022`.
 
-**Demonstrate the pricing engine with real data:**
+This makes the demonstration data reproducible.
 
-1. Select SKU-000001 from the product list
-2. Open the Pricing Simulator
-3. The engine computes:
-   - **Cost basis**: from cost_history table
-   - **Price floor**: `max(cost × (1 + min_margin), ...)` 
-   - **Price ceiling**: `min(cost × (1 + max_margin), ...)`
-   - **Recommended price**: based on demand level and signals
+**Step 4 – Cost Management**
 
-4. **Scenario**: Demand = HIGH, Stock = 50
-   - Engine recommends price with full explainability
-   - Shows: "Floor: ₹1200, Ceiling: ₹2400, Recommended: ₹1450"
-   - Margin calculation: `((1450 - 1000) / 1450) × 100 = 31.03%`
+The Costs page contains product cost information and cost history.
 
-5. **Constraint validation**:
-   - Price below floor → BLOCKED with PRICE_BELOW_FLOOR exception
-   - Price above ceiling → BLOCKED with margin violation
-   - All decisions require margin >= MIN_PROFIT_MARGIN_PCT (25.04%)
+Cost is one of the most important inputs in pricing because the system uses it to calculate the minimum acceptable selling price.
 
-*Key message: The pricing engine is deterministic and rule-based, not "black box AI"*
+If the cost of a product changes, the pricing calculations should reflect that change.
 
----
+**Step 5 – Pricing Simulator**
 
-### Step 6: Decision Center — Approve/Block (60 seconds)
+This is one of the main features of PricePilot AI.
 
-**Demonstrate the decision approval workflow:**
+In the Pricing Simulator, we can select a product and evaluate a pricing scenario.
 
-1. Navigate to Decision Center
-2. View pending decisions (20 total: 19 approved/5 blocked/1 flagged)
-3. **Approve a decision**: 
-   - Recommended price meets all constraints
-   - Margin >= MIN_PROFIT_MARGIN_PCT
-   - Status changes from PROPOSED → APPROVED
-   - PriceHistory record created automatically
+The engine considers the product cost, current price, demand, inventory, competitor information and applicable promotion rules.
 
-4. **Block a decision**:
-   - Set price below floor (e.g., ₹800 when floor is ₹1200)
-   - Decision status: BLOCKED
-   - Exception auto-created: PRICE_BELOW_FLOOR
-   - PriceHistory NOT written — blocked decisions remain proposals
+It then calculates a recommended price while checking the minimum margin and maximum pricing constraints.
 
-5. **Show decision detail**:
-   - Decision ID, SKU, recommended price, reason
-   - Approval timestamp (if approved)
-   - Associated exception (if blocked)
-   - Full audit trail
+For example, if a proposed price falls below the permitted price floor, the system identifies the violation and prevents the decision from being approved.
 
-*Key message: Only APPROVED decisions write to PriceHistory; blocked decisions stay as proposals with exceptions*
-
----
+The important part is that the result is explainable. We can understand why the system recommended a particular price and which business rules influenced the result.
 
-### Step 7: Exceptions — Edge Case Tracking (45 seconds)
-
-**Five required edge cases displayed:**
-
-1. **PRICE_BELOW_FLOOR** — 3 open exceptions (price set below floor)
-2. **PROMOTION_STACK_VIOLATION** — 2 exceptions (stacking would exceed max discount)
-3. **STALE_COMPETITOR_OBSERVATION** — 40 deviations flagged; signal excluded but not hard-blocked
-4. **INCORRECT_MARGIN_CALCULATION** — margin recalculated and validated
-5. **MISSING_PRICE_CHANGE_REASON** — all price changes require documented reason
-
-*View exception details, severity, resolution status, and remediation actions*
-
----
-
-### Step 8: Competitor Intelligence (45 seconds)
-
-- View competitor price deviations per SKU
-- Stale observations marked with ⚠️ FLAGGED warning
-- Stale observations: signal excluded from pricing engine, but does NOT block decision
-- Fresh competitor data (within COMPETITOR_FRESHNESS_DAYS = 7 days) used in pricing
-- Demonstrate toggle to show stale vs. fresh observations
-
----
-
-### Step 9: Promotions Management (45 seconds)
-
-- List 50 active promotions (seed data)
-- Create new promotion with discount rules
-- Stacking validation: `stacking_allowed` and `max_discount_percent` enforcement
-- Promotion eligibility: applicable_categories, applicable_brands
-- Demonstrate promotion overlap check — ensure no stack violations
-
----
-
-### Step 10: Analytics & Audit (45 seconds)
-
-**Analytics page:**
-- Revenue trends over time (from customer_orders)
-- Margin analysis by product category
-- Top-performing products by gross profit
-- Inventory risk assessment
-- Validation report from analytics API
-
-**Audit page:**
-- Immutable action log of all system changes
-- Filter by entity type, actor, action, timestamp
-- Show audit facets (most active entities, action distribution)
-- Demonstrate that every API call, decision, and price change is logged
-- Key: audit_log entity_type, action, actor, old_value, new_value
-
----
-
-### Step 11: Settings — Admin Configuration (45 seconds)
-
-- System settings with MIN_PROFIT_MARGIN_PCT = 25.04%
-- MAX_PROFIT_MARGIN_PCT = 60.0%
-- COMPETITOR_FRESHNESS_DAYS = 7
-- Demand multipliers: HIGH=1.08, MEDIUM=1.0, LOW=0.95
-- User role management
-- Demonstrate that manager role can approve/block; admin has full access
-
----
-
-## 4. Technical Highlights (30 seconds)
-
-**Pricing Engine Formulas:**
-```
-Floor = max(Cost × (1 + MIN_PROFIT_MARGIN_PCT), Cost × (1 + Signal Buffer))
-Ceiling = min(Cost × (1 + MAX_PROFIT_MARGIN_PCT), Competitor × (1 + Buffer))
-Actual Margin = ((Price - Cost) / Price) × 100
-```
-
-**Key Design Decisions:**
-- ✅ Deterministic seed 20261022 — reproducible results
-- ✅ Floor/ceiling with full explainability — no black box
-- ✅ Stale competitor = FLAGGED warning, signal excluded (not hard-blocked)
-- ✅ Only APPROVED decisions write PriceHistory
-- ✅ Alembic migrations as schema source of truth
-- ✅ RBAC: ADMIN/PRICING_MANAGER for writes; user admin requires ADMIN
-- ✅ Full test coverage: 5/5 Pytest business rule tests pass, 24/24 data-validation checks
-
-**Architecture:**
-- Frontend ↔ Backend via /api/v1 proxy
-- PostgreSQL 18 as source of truth for all KPIs
-- Docker Compose for deployment
-- Swagger/OpenAPI documentation at /api/docs
-
----
-
-## 5. Closing (15 seconds)
-
-**Value Proposition:**
-- PricePilot AI reduces price optimization time from days to minutes
-- Full explainability — every price change is traceable and justifiable
-- Real database-driven KPIs, no fabricated metrics
-- Deterministic seed 20261022 ensures reproducibility
-- Enterprise-ready with PostgreSQL, Alembic migrations, RBAC, and full audit trail
-
-**Contact & Repository:**
-- GitHub: https://github.com/GudepuRakshitha/PricePilot-AI-Dynamic-Pricing-Promotion-Decision-Intelligence-Platform-YottaFlex-AI-Hackathon.git
-- Backend: http://localhost:8000/docs (Swagger)
-- Frontend: http://localhost:5173
-- Demo credentials: analyst@pricepilot.ai / Analyst@12345, manager@pricepilot.ai / Manager@12345, admin@pricepilot.ai / Admin@12345
-
----
-*Demonstration complete — thank you for exploring PricePilot AI!*
+**Step 6 – Decision Center**
+
+After running a simulation, users can review pricing decisions in the Decision Center.
+
+A manager can review a recommendation and approve or block it, depending on the business rules and permissions.
+
+When a decision is approved, the corresponding price history is updated.
+
+A blocked decision does not update the price history. Instead, it remains available for review.
+
+This separation helps prevent unapproved pricing changes from reaching the business records.
+
+**Step 7 – Exception Management**
+
+The Exceptions page helps identify situations where pricing rules or business conditions are violated.
+
+The platform handles five important cases:
+
+1. Price below the permitted floor.
+2. Promotion stacking violations.
+3. Stale competitor observations.
+4. Incorrect margin calculations.
+5. Missing reasons for price changes.
+
+For example, if competitor information is outdated, the system flags it as a warning and excludes that observation from the pricing calculation. It does not automatically block the entire pricing decision.
+
+Users can review the exception, understand its cause and track its resolution.
+
+**Step 8 – Competitor Intelligence**
+
+The Competitors page provides visibility into competitor pricing information.
+
+Users can compare observed competitor prices with their own product prices.
+
+The system also checks whether competitor observations are fresh enough to be used in pricing decisions.
+
+This helps avoid making pricing recommendations based on outdated information.
+
+**Step 9 – Promotion Management**
+
+Promotions are another important part of pricing.
+
+On this page, users can review existing promotions and manage promotion details.
+
+The platform checks promotion eligibility, discount limits and stacking rules.
+
+For example, when multiple promotions apply to the same product, the system checks whether combining those discounts would exceed the permitted limit.
+
+This helps protect product margins.
+
+**Step 10 – Analytics and Audit**
+
+The Analytics page provides a broader view of business performance through KPIs and charts.
+
+Users can explore revenue trends, margin performance, product performance and inventory-related information.
+
+The Audit page provides traceability for important system activities.
+
+It helps administrators understand which actions were performed, who performed them and what changes were made.
+
+This is particularly important in enterprise applications, where pricing decisions need to be reviewable and accountable.
+
+**Step 11 – Settings**
+
+Finally, the Settings page provides access to system-level configuration.
+
+Administrators can review pricing policies and other configuration values.
+
+The application also enforces role-based permissions, so users can only perform actions allowed for their assigned roles.
+
+### 4. Technical Highlights
+
+There are a few important technical decisions behind this project.
+
+First, the synthetic dataset uses a fixed seed of `20261022`, allowing the data generation process to be reproduced.
+
+Second, the pricing engine checks price floors, ceilings, margins and applicable business constraints before a decision can be approved.
+
+Third, stale competitor observations are treated as warnings, and their signals are excluded from the pricing calculation.
+
+Fourth, only approved pricing decisions update price history.
+
+Finally, the platform uses PostgreSQL as its source of truth, Alembic for schema migrations, JWT for authentication and Pytest for backend business-rule testing.
+
+The project also includes Docker configuration, Swagger API documentation and a Postman collection.
+
+### 5. Closing
+
+To conclude, PricePilot AI brings product costs, competitor information, inventory, promotions and pricing decisions together in one platform.
+
+The main goal was not just to calculate a new selling price. It was to build a system where every pricing recommendation can be understood, validated and tracked.
+
+The platform demonstrates how explainable pricing logic and well-structured backend systems can support better business decisions.
+
+Thank you for your time. I'm happy to demonstrate any feature or answer your questions.
+
+### Project Links
+
+- **Frontend:** http://localhost:5173
+- **Backend API Documentation:** http://localhost:8000/docs
+- **GitHub:** https://github.com/GudepuRakshitha/PricePilot-AI-Dynamic-Pricing-Promotion-Decision-Intelligence-Platform-YottaFlex-AI-Hackathon
+
