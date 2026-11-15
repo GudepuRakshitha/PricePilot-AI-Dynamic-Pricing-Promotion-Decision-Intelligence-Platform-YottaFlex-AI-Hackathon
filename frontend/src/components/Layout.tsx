@@ -27,6 +27,12 @@ const navGroups: Array<{
   items: Array<{ to: string; label: string; icon: typeof Gauge }>;
 }> = [
   {
+    label: "Developer Hub",
+    items: [
+      { to: "/developer-profile", label: "Developer Profile", icon: Gauge },
+    ],
+  },
+  {
     label: "Overview",
     items: [
       { to: "/", label: "Executive Dashboard", icon: Gauge },
@@ -59,10 +65,7 @@ const navGroups: Array<{
   },
   {
     label: "System",
-    items: [
-      { to: "/settings", label: "Settings", icon: Settings },
-      { to: "/about", label: "About", icon: Gauge },
-    ],
+    items: [],
   },
 ];
 
