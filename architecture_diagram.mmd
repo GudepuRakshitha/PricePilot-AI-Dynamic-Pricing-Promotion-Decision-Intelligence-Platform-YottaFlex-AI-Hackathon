@@ -1,0 +1,60 @@
+graph TD
+    subgraph Frontend[PricePilot AI Frontend]
+        direction TB
+        Vite["Vite Dev Server (\u2192 localhost:5173)"]
+        React["React 18 + TypeScript"]
+        Tailwind["Tailwind CSS 3"]
+        Axios["Axios API Client"]
+        ReactRouter["React Router 6"]
+        HookForm["React Hook Form 7"]
+        Zod["Zod Validation"]
+        Lucide["Lucide React Icons"]
+        Protected["ProtectedRoute Component"]
+        Layout["Layout Component"]
+    end
+
+    subgraph Backend[PricePilot AI Backend]
+        direction TB
+        FastAPI["FastAPI (\u2192 localhost:8000)"]
+        SQLAlchemy["SQLAlchemy 2.x ORM"]
+        Pydantic["Pydantic 2.x Validation"]
+        Alembic["Alembic Migrations"]
+        JWT["JWT Authentication"]
+        Router["API Routers (\u2192 /api/v1/)"]
+    end
+
+    subgraph Database[PostgreSQL 18 Database]
+        direction TB
+        PriceDB["pricepilot_ai Database"]
+        Tables["Tables: products, users, promotions, prices, cost_history, inventory, competitor_observations, pricing_decision, price_history, exceptions, audit_log, customer_orders, system_settings"]
+        Indexes["Indexes & Constraints"]
+    end
+
+    subgraph Services[PricePilot AI Services]
+        direction TB
+        PricingEngine["Pricing Engine (floor/ceiling/margin algorithms)"]
+        SyntheticGenerator["Synthetic Data Generator (seed=20261022)"]
+        DecisionEngine["Decision Approval Engine"]
+        AnalyticsService["Analytics & KPI Service"]
+        AuditService["Audit Log Service"]
+        SettingsService["System Settings Service"]
+    end
+
+    Frontend -->|HTTPS /api/v1 proxy| Backend
+    Backend -->|SQLAlchemy ORM| Database
+    Frontend -->|API calls| Router
+    Router --> PricingEngine
+    Router --> DecisionEngine
+    Router --> AnalyticsService
+    Router --> AuditService
+    Router --> SettingsService
+    PricingEngine -->|Cost, margin, floor/ceiling calculations| Database
+    DecisionEngine -->|APPROVED writes to PriceHistory| Database
+    AnalyticsService -->|KPI queries from DB records| Database
+    AuditService -->|Immutable action logging| Database
+    SyntheticGenerator -->|CLI| Database
+    
+    style Frontend fill:#3b82f6,color:#fff
+    style Backend fill:#ef4444,color:#fff
+    style Database fill:#18bc9c,color:#fff
+    style Services fill:#f59e0b,color:#fff

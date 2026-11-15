@@ -1,0 +1,120 @@
+erDiagram
+    PRODUCT ||--|{ PRICE_HISTORY : "has price history"
+    PRODUCT ||--|{ COST_HISTORY : "has cost history"
+    PRODUCT ||--|{ INVENTORY_SNAPSHOT : "tracked in inventory"
+    PRODUCT ||--|{ COMPETITOR_OBSERVATION : "has competitor price checks"
+    PRODUCT ||--|{ ORDERS : "generates customer orders"
+    PRODUCT ||--|{ PROMOTION : "eligible for promotions"
+    PRODUCT {
+        string sku PK
+        string name
+        string category
+        string brand
+        string description
+        datetime created_at
+    }
+
+    USER ||--|{ PRICING_DECISION : "creates decisions"
+    USER ||--|{ EXCEPTIONS : "triggers exceptions"
+    USER ||--|{ AUDIT_LOG : "performs actions logged"
+    USER {
+        string user_id PK
+        string email UK
+        string password_hash
+        string role
+        datetime created_at
+    }
+
+    PROMOTION ||--|{ PRICING_DECISION : "affects decisions"
+    PROMOTION ||--|{ INVENTORY_SNAPSHOT : "applied to inventory"
+    PROMOTION {
+        string promo_id PK
+        string code UK
+        string name
+        string discount_type
+        float discount_value
+        float min_purchase_value
+        string applicable_categories
+        string applicable_brands
+        bool stacking_allowed
+        float max_discount_percent
+        datetime start_date
+        datetime end_date
+        string status
+    }
+
+    PRICING_DECISION ||--|{ PRICE_HISTORY : "creates price history on APPROVE"
+    PRICING_DECISION ||--|{ EXCEPTIONS : "may generate exceptions"
+    PRICING_DECISION {
+        string decision_id PK
+        string sku FK
+        string decided_by FK
+        decimal recommended_price
+        decimal applied_discount
+        string status "PROPOSED/APPROVED/BLOCKED"
+        string reason
+        datetime created_at
+        datetime approved_at
+    }
+
+    COST_HISTORY ||--|{ INVENTORY_SNAPSHOT : "provides cost basis"
+    COST_HISTORY {
+        string cost_id PK
+        string sku FK
+        decimal cost_amount
+        string source
+        datetime effective_date
+        string change_reason
+    }
+
+    INVENTORY_SNAPSHOT ||--|{ ORDERS : "stock basis for orders"
+    INVENTORY_SNAPSHOT {
+        string snapshot_id PK
+        string sku FK
+        int quantity_available
+        int reserved_quantity
+        int reorder_point
+        decimal current_cost FK
+        datetime snapshot_date
+    }
+
+    COMPETITOR_OBSERVATION ||--|{ PRODUCT : "per SKU"
+    COMPETITOR_OBSERVATION {
+        string observation_id PK
+        string sku FK
+        string competitor
+        string competitor_sku
+        decimal observed_price
+        string source
+        bool is_stale
+        datetime observed_at
+    }
+
+    AUDIT_LOG {
+        string log_id PK
+        string entity_type
+        string entity_id
+        string action
+        string old_value
+        string new_value
+        string actor
+        datetime timestamp
+    }
+
+    CUSTOMER_ORDERS ||--|{ REVENUE_ANALYTICS : "source of revenue"
+    CUSTOMER_ORDERS {
+        string order_id PK
+        string sku FK
+        int quantity
+        decimal unit_price
+        decimal discount_amount
+        decimal revenue
+        decimal cost
+        datetime order_date
+    }
+
+    SYSTEM_SETTINGS {
+        string setting_key PK
+        string setting_value
+        datetime updated_at
+    }

@@ -18,9 +18,9 @@ from app.models.user import User
 from app.services import competitor_service, decision_service, exception_service, pricing_engine, synthetic_data_service
 
 DEFAULT_USERS = [
-    ("admin@pricepilot.ai", "Admin@12345", "Aarav Mehta", "ADMIN"),
-    ("manager@pricepilot.ai", "Manager@12345", "Priya Sharma", "PRICING_MANAGER"),
-    ("analyst@pricepilot.ai", "Analyst@12345", "Rohan Iyer", "ANALYST"),
+    ("admin@pricepilot.ai", "Admin@12345", "Gudepu Rakshitha Reddy", "ADMIN"),
+    ("manager@pricepilot.ai", "Manager@12345", "Srinivas", "PRICING_MANAGER"),
+    ("analyst@pricepilot.ai", "Analyst@12345", "Chaithanya", "ANALYST"),
 ]
 
 

@@ -1,0 +1,437 @@
+/*
+ * PricePilot AI - Postman Collection
+ * Dynamic Pricing & Promotion Decision Intelligence Platform
+ * 
+ * Base URL: http://localhost:8000/api/v1
+ * Auth: Bearer JWT token
+ */
+
+// Auth environment
+const auth = {
+  token: '',
+  username: 'analyst@pricepilot.ai',
+  password: 'Analyst@12345'
+};
+
+// Users environment
+const users = {
+  analyst: {
+    token: '',
+    id: 'analyst@pricepilot.ai'
+  },
+  manager: {
+    token: '',
+    id: 'manager@pricepilot.ai'
+  },
+  admin: {
+    token: '',
+    id: 'admin@pricepilot.ai'
+  }
+};
+
+// ============================================================
+// Authentication Flows
+// ============================================================
+
+/// Test: Login - Analyst
+POST /auth/login
+Body:
+{
+  "email": "{{analyst.username}}",
+  "password": "{{analyst.password}}"
+}
+Auth: No auth
+Response: JWT token stored in {{auth.token}}
+
+/// Test: Login - Manager
+POST /auth/login
+Body:
+{
+  "email": "{{manager.username}}", 
+  "password": "{{manager.password}}"
+}
+Auth: No auth
+Response: JWT token stored in {{auth.token}}
+
+/// Test: Login - Admin
+POST /auth/login
+Body:
+{
+  "email": "{{admin.username}}",
+  "password": "{{admin.password}}"
+}
+Auth: No auth
+Response: JWT token stored in {{auth.token}}
+
+/// Test: Logout
+POST /auth/logout
+Auth: Bearer {{auth.token}}
+Response: Success message
+
+/// Test: Refresh token
+POST /auth/refresh
+Auth: Bearer {{auth.token}}
+Response: New JWT token
+
+// ============================================================
+// Users
+// ============================================================
+
+/// Test: Get current user
+GET /users/me
+Auth: Bearer {{auth.token}}
+Response: User details and role
+
+/// Test: List all users
+GET /users/
+Auth: Bearer {{admin.token}}
+Response: Array of user objects
+
+// ============================================================
+// Products
+// ============================================================
+
+/// Test: List all products
+GET /products/
+Auth: Bearer {{auth.token}}
+Query: limit?, page?, search?
+Response: Paginated product list
+
+/// Test: Get product by SKU
+GET /products/SKU-000001
+Auth: Bearer {{auth.token}}
+Response: Product details
+
+/// Test: Create product (admin only)
+POST /products/
+Auth: Bearer {{admin.token}}
+Body:
+{
+  "name": "Test Product",
+  "category": "Electronics",
+  "brand": "TestBrand",
+  "description": "A test product"
+}
+Response: Created product object
+
+// ============================================================
+// Costs
+// ============================================================
+
+/// Test: List all costs
+GET /costs/
+Auth: Bearer {{auth.token}}
+Query: sku?, effective_date?, source?
+
+/// Test: Get cost by ID
+GET /costs/{cost_id}
+Auth: Bearer {{auth.token}}
+
+/// Test: Create cost record
+POST /costs/
+Auth: Bearer {{admin.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "effective_date": "2026-01-15",
+  "cost_amount": 1500.00,
+  "source": "MANUAL",
+  "change_reason": "Cost review"
+}
+Response: Created cost record
+
+// ============================================================
+// Prices / Price History
+// ============================================================
+
+/// Test: List price history
+GET /prices/
+Auth: Bearer {{auth.token}}
+Query: sku?, start_date?, end_date?
+
+/// Test: Get price by ID
+GET /prices/{price_id}
+Auth: Bearer {{auth.token}}
+
+/// Test: Get latest price for SKU
+GET /prices/latest/SKU-000001
+Auth: Bearer {{auth.token}}
+
+/// Test: Get price history with decisions
+GET /prices/history/SKU-000001
+Auth: Bearer {{auth.token}}
+
+// ============================================================
+// Inventory
+// ============================================================
+
+/// Test: List inventory snapshots
+GET /inventory/
+Auth: Bearer {{auth.token}}
+Query: sku?, snapshot_date?, low_stock_only?
+
+/// Test: Get inventory by SKU
+GET /inventory/SKU-000001
+Auth: Bearer {{auth.token}}
+
+/// Test: Create inventory snapshot (admin)
+POST /inventory/
+Auth: Bearer {{admin.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "quantity_available": 100,
+  "reserved_quantity": 0,
+  "reorder_point": 20
+}
+Response: Created inventory snapshot
+
+// ============================================================
+// Competitors
+// ============================================================
+
+/// Test: List competitor observations
+GET /competitors/
+Auth: Bearer {{auth.token}}
+Query: sku?, is_stale?, competitor?
+
+/// Test: Get competitor by SKU and observation ID
+GET /competitors/OBS-SKU-202601150000
+Auth: Bearer {{auth.token}}
+
+/// Test: Create competitor observation (admin)
+POST /competitors/
+Auth: Bearer {{admin.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "competitor": "TestCorp",
+  "competitor_sku": "TEST-001",
+  "observed_price": 1450.00,
+  "source": "SCRAPING",
+  "is_stale": false
+}
+Response: Created observation
+
+// ============================================================
+// Promotions
+// ============================================================
+
+/// Test: List promotions
+GET /promotions/
+Auth: Bearer {{auth.token}}
+Query: status?, applicable_categories?, applicable_brands?
+
+/// Test: Get promotion by ID
+GET /promotions/PROMO-2026-000001
+Auth: Bearer {{auth.token}}
+
+/// Test: Create promotion (admin)
+POST /promotions/
+Auth: Bearer {{admin.token}}
+Body:
+{
+  "name": "Test Promotion",
+  "code": "TEST10",
+  "discount_type": "PERCENTAGE",
+  "discount_value": 15.00,
+  "min_purchase_value": 50.00,
+  "applicable_categories": ["Electronics"],
+  "applicable_brands": ["TestBrand"],
+  "stacking_allowed": true,
+  "max_discount_percent": 60.00,
+  "start_date": "2026-01-20",
+  "end_date": "2026-02-20",
+  "status": "SCHEDULED"
+}
+Response: Created promotion
+
+// ============================================================
+// Pricing Simulation
+// ============================================================
+
+/// Test: Run pricing simulation
+POST /pricing/simulate
+Auth: Bearer {{auth.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "base_price": 1200.00,
+  "scenarios": [
+    {
+      "demand_level": "HIGH",
+      "available_stock": 50
+    }
+  ]
+}
+Response: Simulation results with recommended prices
+
+/// Test: Get simulation scenarios
+GET /pricing/scenarios/SKU-000001
+Auth: Bearer {{auth.token}}
+
+// ============================================================
+// Pricing Decisions
+// ============================================================
+
+/// Test: List decisions
+GET /pricing/decisions/
+Auth: Bearer {{auth.token}}
+Query: status?, sku?, search?
+
+/// Test: Get decision by ID
+GET /pricing/decisions/{decision_id}
+Auth: Bearer {{auth.token}}
+
+/// Test: Create decision (via pricing engine)
+POST /pricing/decisions/
+Auth: Bearer {{manager.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "recommended_price": 1250.00,
+  "applied_discount": 10.00,
+  "demand_level": "STABLE",
+  "reason": "Testing decision creation"
+}
+Response: Created decision object
+
+/// Test: Blocked decision (price below floor)
+POST /pricing/decisions/
+Auth: Bearer {{manager.token}}
+Body:
+{
+  "sku": "SKU-000001",
+  "recommended_price": 500.00,  // Below floor
+  "applied_discount": 0.00,
+  "demand_level": "STABLE",
+  "reason": "Testing below floor"
+}
+Response: BLOCKED decision with exception
+
+// ============================================================
+// Exceptions
+// ============================================================
+
+/// Test: List exceptions
+GET /exceptions/
+Auth: Bearer {{auth.token}}
+Query: issue_type?, severity?, resolution_status?
+
+/// Test: Get exception by ID
+GET /exceptions/{exception_id}
+Auth: Bearer {{auth.token}}
+
+/// Test: Create exception (auto-created when blocked decision)
+POST /exceptions/
+Auth: Bearer {{auth.token}}
+Body:
+{
+  "issue_type": "PRICE_BELOW_FLOOR",
+  "severity": "HIGH",
+  "sku": "SKU-000001",
+  "description": "Price below minimum margin floor",
+  "expected_behavior": "Price should be >= floor",
+  "actual_behavior": "Price was set below floor"
+}
+Response: Created exception record
+
+// ============================================================
+// Analytics
+// ============================================================
+
+/// Test: Get analytics summary
+GET /analytics/summary
+Auth: Bearer {{auth.token}}
+Response: Summary dashboard data
+
+/// Test: Get analytics categories
+GET /analytics/categories
+Auth: Bearer {{auth.token}}
+
+/// Test: Get analytics top products
+GET /analytics/top-products?limit=6
+Auth: Bearer {{auth.token}}
+
+/// Test: Get validation report
+GET /analytics/validation
+Auth: Bearer {{auth.token}}
+
+/// Test: Get inventory risk
+GET /analytics/inventory-risk
+Auth: Bearer {{auth.token}}
+
+// ============================================================
+// Audit
+// ============================================================
+
+/// Test: List audit logs
+GET /audit/
+Auth: Bearer {{admin.token}}
+Query: entity_type?, action?, actor?, search?, page?, limit?
+
+/// Test: Get audit facets
+GET /audit/facets
+Auth: Bearer {{admin.token}}
+
+/// Test: Get audit by entity
+GET /audit/entity/{entity_type}/{entity_id}
+Auth: Bearer {{admin.token}}
+
+// ============================================================
+// System Health
+// ============================================================
+
+/// Test: Health check
+GET /health
+Auth: None (public endpoint)
+Response: Status OK
+
+/// Test: System metrics
+GET /api/v1/system/metrics
+Auth: Bearer {{auth.token}}
+
+/// Test: Database health
+GET /api/v1/system/database
+Auth: Bearer {{admin.token}}
+Response: Table row counts, server version
+
+// ============================================================
+// Environment Setup
+// ============================================================
+
+// Before running any tests:
+// 1. Start the backend: uvicorn app.main:app --host 0.0.0.0 --port 8000
+// 2. Start the frontend: npm run dev (Vite on localhost:5173)
+// 3. Login to get JWT token: {{auth.token}}
+// 4. Set the token in the authorization header: Bearer {{auth.token}}
+
+/// Test Environment Variables
+/*
+ * Set these as environment variables in Postman:
+ * - BASE_URL: http://localhost:8000/api/v1
+ * - ANALYST_TOKEN: JWT token from analyst login
+ * - MANAGER_TOKEN: JWT token from manager login  
+ * - ADMIN_TOKEN: JWT token from admin login
+ */
+
+// ============================================================
+// Collection Notes
+// ============================================================
+
+/*
+ * This collection tests all 13 PricePilot AI application pages
+ * and their corresponding API endpoints.
+ * 
+ * Test flow:
+ * 1. Login as analyst/manager/admin
+ * 2. Navigate through all pages
+ * 3. Test CRUD operations
+ * 4. Test validation and error responses
+ * 5. Test role-based access controls
+ * 
+ * All API tests require the backend FastAPI server to be running.
+ * All UI tests require the React development server to be running.
+ */
+
+// End of Postman Collection

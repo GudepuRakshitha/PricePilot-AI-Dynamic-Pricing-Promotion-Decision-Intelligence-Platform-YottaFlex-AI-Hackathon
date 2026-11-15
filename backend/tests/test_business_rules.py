@@ -5,18 +5,8 @@ import os
 # Add backend to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+from decimal import Decimal
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker
-
-# Create tables first so synthetic data can be persisted
-engine = create_engine("sqlite:///:memory:")
-metadata = MetaData()
-metadata.reflect(bind=engine)  # load existing tables if any
-# We don't create all tables here since synthetic_data_service uses its own models
-# Instead, we just test the business logic directly
-
-
-import pytest
 
 
 def test_floor_ceiling_consistency():
@@ -62,21 +52,29 @@ def test_floor_violation_detection():
 def test_seed_data_integrity():
     """Test that starter dataset has expected structure."""
     from app.services.synthetic_data_service import generate_and_persist
-    from sqlalchemy import create_engine
+    from sqlalchemy import create_engine, MetaData
     from sqlalchemy.orm import sessionmaker
 
-    # Create engine with tables
+    # Create engine with tables - use the models that the synthetic generator needs
     engine = create_engine("sqlite:///:memory:")
+    metadata = MetaData()
+
+    # Create all needed tables
+    from app.models import product, price_history, cost_history, inventory, competitor, promotion
+    from app.models.order import CustomerOrder
+    from app.models.price_history import PricingDecision
+    from app.models.inventory import InventorySnapshot
+    from app.models.competitor import CompetitorObservation
+    from app.models.promotion import Promotion
+    
+    # Register all models with Base.metadata
+    from app.models.base import Base
+    Base.metadata.create_all(engine)
+    
     SessionLocal = sessionmaker(bind=engine)
     db = SessionLocal()
 
     try:
-        # Create all tables needed
-        from app.models import product, price_history, cost_history, inventory, competitor, promotion, orders
-        from app.models import pricing_decision
-        metadata = MetaData()
-        metadata.create_all(engine)  # Create all tables
-        
         result = generate_and_persist(db, mode="starter")
         
         # Verify costs table
@@ -114,20 +112,26 @@ def test_seed_data_integrity():
 def test_algorithm_determinism():
     """Test that the generator produces identical results with the same seed."""
     from app.services.synthetic_data_service import generate_and_persist
-    from sqlalchemy import create_engine
+    from sqlalchemy import create_engine, MetaData
     from sqlalchemy.orm import sessionmaker
 
     # Create engine with tables
     engine1 = create_engine("sqlite:///:memory:")
     metadata1 = MetaData()
-    from app.models import product, price_history, cost_history, inventory, competitor, promotion, orders, pricing_decision
-    metadata1.create_all(engine1)
+    from app.models import product, price_history, cost_history, inventory, competitor, promotion
+    from app.models.order import CustomerOrder
+    from app.models.price_history import PricingDecision
+    from app.models.inventory import InventorySnapshot
+    from app.models.competitor import CompetitorObservation
+    from app.models.promotion import Promotion
+    from app.models.base import Base
+    Base.metadata.create_all(engine1)
     SessionLocal1 = sessionmaker(bind=engine1)
     db1 = SessionLocal1()
     
     engine2 = create_engine("sqlite:///:memory:")
     metadata2 = MetaData()
-    metadata2.create_all(engine2)
+    Base.metadata.create_all(engine2)
     SessionLocal2 = sessionmaker(bind=engine2)
     db2 = SessionLocal2()
 
