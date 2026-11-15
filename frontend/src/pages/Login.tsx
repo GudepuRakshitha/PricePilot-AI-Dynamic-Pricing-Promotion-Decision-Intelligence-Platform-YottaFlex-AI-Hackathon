@@ -219,6 +219,8 @@ export default function Login() {
 
           <p className="mt-8 text-center text-[11px] text-slate-400">
             PostgreSQL 18 · FastAPI · React + TypeScript · JWT authentication
+
+            DEVELOPER : GUDEPU RAKSHITHA REDDY
           </p>
         </div>
       </section>
