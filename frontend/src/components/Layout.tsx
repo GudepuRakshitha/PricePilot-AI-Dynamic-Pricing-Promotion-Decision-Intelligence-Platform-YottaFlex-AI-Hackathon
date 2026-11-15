@@ -36,7 +36,6 @@ const navGroups: Array<{
     label: "Overview",
     items: [
       { to: "/", label: "Executive Dashboard", icon: Gauge },
-      { to: "/analytics", label: "Analytics & Reports", icon: BarChart3 },
     ],
   },
   {
@@ -54,13 +53,6 @@ const navGroups: Array<{
       { to: "/simulator", label: "Pricing Simulator", icon: Calculator },
       { to: "/decisions", label: "Decision Center", icon: ClipboardCheck },
       { to: "/promotions", label: "Promotions", icon: TicketPercent },
-    ],
-  },
-  {
-    label: "Governance",
-    items: [
-      { to: "/exceptions", label: "Exceptions", icon: AlertTriangle },
-      { to: "/audit", label: "Audit History", icon: History },
     ],
   },
   {
@@ -89,6 +81,7 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   const current =
     navGroups.flatMap((group) => group.items).find((item) => item.to === location.pathname)?.label ??
@@ -145,15 +138,71 @@ export default function Layout() {
             <p className="truncate text-xs font-semibold text-white">{user?.full_name}</p>
             <p className="truncate text-[10px] text-slate-400">{titleCase(user?.role)}</p>
           </div>
-          <button
-            type="button"
-            onClick={logout}
-            className="rounded-md p-1.5 text-slate-400 hover:bg-white/10 hover:text-white"
-            title="Sign out"
-            aria-label="Sign out"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowAccountMenu(true)}
+              className="rounded-full px-3 py-1.5 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white transition-colors"
+              aria-label="Account menu"
+            >
+              <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-inset ring-emerald-200 sm:inline-flex">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active
+              </span>
+              <Gauge className="h-4 w-4" />
+            </button>
+            <div
+              id="account-menu"
+              className="absolute right-0 mt-2 w-40 rounded-lg bg-white shadow-lg border border-slate-200 z-50 min-w max-h overflow-hidden animate-fadeInDown"
+              style={{ display: showAccountMenu ? 'block' : 'hidden' }}
+            >
+              <div className="p-4 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-brand-500/20 w-10 h-10 flex items-center justify-center text-brand-500 text-xs font-bold">
+                    GR
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-900">Gudepu Rakshitha Reddy</p>
+                    <p className="text-[10px] font-normal text-slate-500">AI Engineer</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-2">
+                <button
+                  className="w-full justify-between px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 transition-colors"
+                  onClick={() => {
+                    window.location.href = '/developer-profile';
+                    setMobileOpen(false);
+                  }}
+                >
+                  Developer Profile
+                </button>
+              </div>
+              <div className="p-2">
+                <button
+                  className="w-full justify-between px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 transition-colors"
+                  onClick={() => {
+                    // Navigate to Srinivas profile
+                    window.location.href = '/';
+                    setMobileOpen(false);
+                  }}
+                >
+                  Srinivas
+                </button>
+              </div>
+              <div className="p-2">
+                <button
+                  className="w-full justify-between px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 transition-colors"
+                  onClick={() => {
+                    // Navigate to Akshitha profile
+                    window.location.href = '/';
+                    setMobileOpen(false);
+                  }}
+                >
+                  Akshitha
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <p className="mt-2 flex items-center gap-1.5 px-1 text-[10px] text-slate-500">
           <Boxes className="h-3 w-3" /> PostgreSQL 18 · FastAPI · React
